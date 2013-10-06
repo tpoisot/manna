@@ -39,12 +39,13 @@ publication accompanying this program.
 
 The executable generated after compilation requires a number of arguments:
 
-- an integer giving the number of species in the flile `splist.txt`
-- an integer telling whether to use body size to determine feeding range (`1`) or only neutral dynamics (`0`)
-- an integer giving the simulation time
-- an integer giving the number of timesteps that should be recovered by the end of the simulation
-- an integer telling whether there is migration at each timestep (`1`for migration, `0` for no migration)
-- an integer telling how many individuals are added at each time step
-- an integer telling whether the system starts with all species (`0`), or whether it should be assembled species-by-species (`1`)
-- the name of the simulation
+1. the file in which the species list is stored (`splist.txt`, unless an other file was generated)
+2. an integer giving the number of species in the flile `splist.txt`
+3. an integer telling whether to use body size to determine feeding range (`1`) or only neutral dynamics (`0`)
+4. an integer giving the simulation time
+5. an integer giving the number of timesteps that should be recovered by the end of the simulation
+6. the prefix of the output file
+7. an integer telling whether there is migration at each timestep (`1`for migration, `0` for no migration)
+8. an integer telling how many individuals are added at each time step
+9. an integer telling whether the system starts with all species (`0`), or whether it should be assembled species-by-species (`1`)
 
