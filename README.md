@@ -2,9 +2,9 @@
 
 A model of trait-based/neutral dynamics of trophic networks
 
-Compilation and execution requires the *GNU Scientific Library*
-
 Author: Timothée Poisot (`timothee_poisot_at_uqar.ca`)
+
+Compilation and execution requires the *GNU Scientific Library*
 
 Released under the terms of the GPL license. Forking this repository
 grants implicit authorisation to pull and mere all future changes and release
