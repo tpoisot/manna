@@ -92,8 +92,16 @@ int main(int argc, char *argv[]) {
 	char tfname[FNSIZE];
 	strcpy (tfname, "../output/");
 	strcat (tfname, argv[6]);
-	strcat (tfname, ".txt");
+	strcat (tfname, ".json");
 	output = fopen(tfname, "w");
+
+   fprintf(output, "{\"name\": \"%s\",\"species\":[", argv[6]);
+   for (int s = 0 ; s < S ; ++s)
+   {
+      fprintf(output, "{\"id\": %d, \"n\": %.4f, \"r\": %.4f, \"c\": %.4f, \"K\": %d}", s, n[s], r[s], c[s], K[s]);
+      if(s < (S-1)) fprintf(output, ",");
+   }
+   fprintf(output, "],\"times\":{");
 
 	for (int step = 0; step < simtime; ++step) {
 		// Get the total population
@@ -105,6 +113,8 @@ int main(int argc, char *argv[]) {
 				pop[migrant_id] += 1;
 			}
 		}
+      // We start a new entry
+      if(simtime - recover < step) fprintf(output, "\"%d\":{\"pop\":[",step+1);
 		// Demography
 		for(int sp = 0; sp < S; ++sp){
 			// Birth probability
@@ -121,6 +131,11 @@ int main(int argc, char *argv[]) {
 			if(pop[sp] > K[sp]){
 				pop[sp] = K[sp];
 			}
+         if(simtime - recover < step)
+         {
+            fprintf(output, "{\"id\": %d, \"pop\": %d}", sp, pop[sp]);
+            if(sp < (S-1)) fprintf(output,",");
+         }
 			// Count the total number
 			totalpop += pop[sp];
 		}
@@ -137,7 +152,9 @@ int main(int argc, char *argv[]) {
 			}
 		}
 		// We start by picking one random position in the SpeciesIndex array
-		for (int ind1 = 0; ind1 < (int) totalpop/50; ++ind1) {
+      if(simtime - recover < step) fprintf(output, "],\"int\":[");
+      int Recorded = 0;
+		for (int ind1 = 0; ind1 < (int) totalpop/30; ++ind1) {
 			int hasPred = 0;
 			int hasPrey = 0;
 			int i1;
@@ -174,14 +191,23 @@ int main(int argc, char *argv[]) {
 			// Update of the population sizes
 			if (PreySuccess == 1){
 				if(simtime - recover < step){
-					fprintf(output, "%s %d %d %d %d %d %d\n", argv[6], niche, step+1, SpPred+1, SpPrey+1, pop[SpPred], pop[SpPrey]);
+               if(Recorded > 0) fprintf(output, ",");
+               fprintf(output,"{\"pred\": %d, \"prey\": %d}", SpPred, SpPrey);
+               Recorded += 1;
+					//fprintf(output, "\"\":%s %d %d %d %d %d %d\n", argv[6], niche, step+1, SpPred+1, SpPrey+1, pop[SpPred], pop[SpPrey]);
 				}
 				--pop[SpPrey];
 			}
 		}
+      if(simtime - recover < step)
+      {
+         fprintf(output, "]}");
+         if (step < (simtime - 1)) fprintf(output, ",");
+      }
 		free(Locked);
 		free(SpeciesIndex);
 	}
+   fprintf(output, "}}");
 	fclose(output);
 
 	stop = clock();
