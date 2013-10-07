@@ -90,4 +90,5 @@ niche model parameters `n`, `c` and `r`, and the carrying capacity `K`. The
 composed of an array `pop` (identifier of the species and current population
       size), and an array `int` (identifier of the predator and the prey). Take
 together, these elements are enough to reconstruct (i) population sizes and
-(ii) network structure over time.
+(ii) network structure over time. This object can then easily be parsed using
+JSON parsers in various languages (`json` in Python, `rjson` in R).
