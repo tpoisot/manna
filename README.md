@@ -10,6 +10,13 @@ Released under the terms of the GPL license. Forking this repository
 grants implicit authorisation to pull and mere all future changes and release
 them (with attribution) under the original license.
 
+# default usage
+
+The default usage is to compile the program from source using `make`. This will
+put to executables, `niche` and `pop`, in the `bin/` folder, and create an
+`output/` folder in which `pop` will write. Both `niche` and `pop` should be
+launched from within the `bin/` folder.
+
 # sub-program `niche`
 
 `niche` is a implementation of the niche model of food webs, also
@@ -51,3 +58,24 @@ The executable generated after compilation requires a number of arguments:
 8. an integer telling how many individuals are added at each time step
 9. an integer telling whether the system starts with all species (`0`), or whether it should be assembled species-by-species (`1`)
 
+## Output files
+
+The `pop` sub-program generates `json` files, following the following scheme:
+
+```{json}
+{
+   "name":"argument 6",
+   "species":[
+   {"id": 0, "n": 0.84, "r": 0.02, "c": 0.61, "K": 183},
+   ...
+   ],
+   "times":[
+      "0":{
+         "pop":[
+         {"id": 0, "pop": 104},
+         ...
+         ]
+      }
+   ]
+}
+```
