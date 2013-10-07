@@ -1,4 +1,4 @@
-# manna
+# The `manna` program
 
 A model of trait-based/neutral dynamics of trophic networks
 
@@ -10,14 +10,14 @@ Released under the terms of the GPL license. Forking this repository
 grants implicit authorisation to pull and mere all future changes and release
 them (with attribution) under the original license.
 
-# default usage
+# Default usage
 
 The default usage is to compile the program from source using `make`. This will
 put to executables, `niche` and `pop`, in the `bin/` folder, and create an
 `output/` folder in which `pop` will write. Both `niche` and `pop` should be
 launched from within the `bin/` folder.
 
-# sub-program `niche`
+# Sub-program `niche`
 
 `niche` is a implementation of the niche model of food webs, also
 generating random carrying capacities based on species body sizes (see
@@ -38,7 +38,7 @@ between 0 and 1, as in the original *niche model* of Williams
 & Martinez), and the randomly generated carrying capacity and
 starting population size.
 
-# sub-program `pop`
+# Sub-program `pop`
 
 `pop` is an individual-based simulation model using the output of
 `niche` to simulate network dynamics. Note that because `pop` reads
@@ -58,7 +58,7 @@ The executable generated after compilation requires a number of arguments:
 8. an integer telling how many individuals are added at each time step
 9. an integer telling whether the system starts with all species (`0`), or whether it should be assembled species-by-species (`1`)
 
-## Output files
+# Output files
 
 The `pop` sub-program generates `json` files, following the following scheme:
 
@@ -74,8 +74,20 @@ The `pop` sub-program generates `json` files, following the following scheme:
          "pop":[
          {"id": 0, "pop": 104},
          ...
+         ],
+         "int":[
+         {"pred"; 0, "prey": 4},
+         ...
          ]
       }
    ]
 }
 ```
+
+The `species` arry has `S` elements, containing the species identifier, the
+niche model parameters `n`, `c` and `r`, and the carrying capacity `K`. The
+`times` array has one element per recorded timestep, with each entry being
+composed of an array `pop` (identifier of the species and current population
+      size), and an array `int` (identifier of the predator and the prey). Take
+together, these elements are enough to reconstruct (i) population sizes and
+(ii) network structure over time.
