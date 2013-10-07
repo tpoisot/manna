@@ -5,13 +5,32 @@ files = list.files(path=of, pattern=prefix)
 
 # Required libraries
 library(rjson)
-library(ggplot2)
+library(lattice)
 
 # Function to analyze a SINGLE simulation
 singleOutput = function(rec)
 {
-   averageRichness = mean(unlist(lapply(rec$times, function(x) length(x$pop))))
-   return(list(S=averageRichness))
+   # We get the list of all species
+   speciesPool = lapply(rec$times, function(x) names(x$pop))
+   uniqueSpecies = unique(unlist(speciesPool))
+   # We then measure the average number of species
+   averageRichness = mean(unlist(lapply(speciesPool, length)))
+   # Let's build a food web
+   FW = matrix(0, ncol=length(uniqueSpecies), nrow=length(uniqueSpecies))
+   colnames(FW) = rownames(FW) = uniqueSpecies
+   for(ti in rec$times)
+   {
+      for(int in ti$int)
+      {
+         FW[as.character(int$pred), as.character(int$prey)] = FW[as.character(int$pred), as.character(int$prey)] + 1
+      }
+   }
+   # Get the adjacency matrix
+   ADJ = FW
+   ADJ[ADJ>0] = 1
+   L = sum(ADJ)
+   # Return some elements
+   return(list(S=averageRichness, L=L, Co=L/averageRichness^2))
 }
 
 # Read all the files
@@ -36,6 +55,6 @@ for(f in files)
 
 migrate = data.frame(migrate)
 
-PL = ggplot(migrate, aes(x=m, colour=factor(neutral))) + theme_bw() 
-
-print(PL + geom_point(aes(y=S)))
+# Plot: connectance as a function of migrant density in neutral / non-neutral
+PL = ggplot(migrate) + theme_bw()
+PL + geom <- boxplot(aes(x=factor(m),y=Co,colour=factor(neutral)))
