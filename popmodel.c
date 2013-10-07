@@ -95,13 +95,13 @@ int main(int argc, char *argv[]) {
 	strcat (tfname, ".json");
 	output = fopen(tfname, "w");
 
-   fprintf(output, "{\"name\": \"%s\",\"species\":[", argv[6]);
+   fprintf(output, "{\"name\": \"%s\",\"species\":{", argv[6]);
    for (int s = 0 ; s < S ; ++s)
    {
-      fprintf(output, "{\"id\": %d, \"n\": %.4f, \"r\": %.4f, \"c\": %.4f, \"K\": %d}", s, n[s], r[s], c[s], K[s]);
+      fprintf(output, "\"%d\":{\"n\": %.4f, \"r\": %.4f, \"c\": %.4f, \"K\": %d}", s, n[s], r[s], c[s], K[s]);
       if(s < (S-1)) fprintf(output, ",");
    }
-   fprintf(output, "],\"times\":{");
+   fprintf(output, "},\"times\":{");
 
 	for (int step = 0; step < simtime; ++step) {
 		// Get the total population
@@ -114,8 +114,9 @@ int main(int argc, char *argv[]) {
 			}
 		}
       // We start a new entry
-      if(simtime - recover < step) fprintf(output, "\"%d\":{\"pop\":[",step+1);
+      if(simtime - recover < step) fprintf(output, "\"%d\":{\"pop\":{",step+1);
 		// Demography
+      int pRecorded = 0;
 		for(int sp = 0; sp < S; ++sp){
 			// Birth probability
 			double ScalingPar = pow((double) (1-n[sp]), ScalingExpo);
@@ -133,8 +134,12 @@ int main(int argc, char *argv[]) {
 			}
          if(simtime - recover < step)
          {
-            fprintf(output, "{\"id\": %d, \"pop\": %d}", sp, pop[sp]);
-            if(sp < (S-1)) fprintf(output,",");
+            if(pop[sp] > 0)
+            {
+               if(pRecorded > 0) fprintf(output, ",");
+               fprintf(output, "\"%d\": %d", sp, pop[sp]);
+               pRecorded += 1;
+            }
          }
 			// Count the total number
 			totalpop += pop[sp];
@@ -152,9 +157,9 @@ int main(int argc, char *argv[]) {
 			}
 		}
 		// We start by picking one random position in the SpeciesIndex array
-      if(simtime - recover < step) fprintf(output, "],\"int\":[");
+      if(simtime - recover < step) fprintf(output, "},\"int\":[");
       int Recorded = 0;
-		for (int ind1 = 0; ind1 < (int) totalpop/30; ++ind1) {
+		for (int ind1 = 0; ind1 < (int) totalpop/50; ++ind1) {
 			int hasPred = 0;
 			int hasPrey = 0;
 			int i1;
