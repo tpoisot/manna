@@ -174,7 +174,7 @@ int main(int argc, char *argv[]) {
 			// Update of the population sizes
 			if (PreySuccess == 1){
 				if(simtime - recover < step){
-					fprintf(output, "%s %d %d %d %d %d %d %.4f %.4f %d %d\n", argv[6], niche, step+1, SpPred+1, SpPrey+1, pop[SpPred], pop[SpPrey], n[SpPred], n[SpPrey], K[SpPred], K[SpPrey]);
+					fprintf(output, "%s %d %d %d %d %d %d\n", argv[6], niche, step+1, SpPred+1, SpPrey+1, pop[SpPred], pop[SpPrey]);
 				}
 				--pop[SpPrey];
 			}
@@ -185,7 +185,7 @@ int main(int argc, char *argv[]) {
 	fclose(output);
 
 	stop = clock();
-	//printf("[%s] %.3f sec.\n", argv[6], (stop - start) / (float) CLOCKS_PER_SEC);
+	printf("[%s] %.3f sec.\n", argv[6], (stop - start) / (float) CLOCKS_PER_SEC);
 
 	gsl_rng_free(rng);
 	return EXIT_SUCCESS;
