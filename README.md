@@ -65,18 +65,21 @@ The `pop` sub-program generates `json` files, following the following scheme:
 ```{json}
 {
    "name":"argument 6",
-   "species":[
-   {"id": 0, "n": 0.84, "r": 0.02, "c": 0.61, "K": 183},
-   ...
-   ],
+   "species":{
+      "0":{"n": 0.84, "r": 0.02, "c": 0.61, "K": 183},
+      "1":{"n": 0.11, "r": 0.10, "c": 0.08, "K": 504},
+      ...
+   },
    "times":[
       "0":{
-         "pop":[
-         {"id": 0, "pop": 104},
-         ...
-         ],
+         "pop":{
+            "0": 121,
+            "1": 104,
+            ...
+         },
          "int":[
-         {"pred"; 0, "prey": 4},
+         {"pred": 0, "prey": 4},
+         {"pred": 3, "prey": 3},
          ...
          ]
       }
