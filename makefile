@@ -1,15 +1,18 @@
-all: bin output pop niche
-	mv pop bin
-	mv niche bin
+BIN = bin
+NICHE = $(BIN)/niche
+POP = $(BIN)/pop
+OPTS = -lgsl -lgslcblas -O3 -DHAVE_INLINE -lm
 
-bin:
-	mkdir -p bin
+all: $(BIN) output $(POP) $(NICHE)
+
+$(BIN):
+	mkdir -p $(BIN)
 
 output:
 	mkdir -p output
 
-pop: popmodel.c
-	clang popmodel.c -o pop -lgsl -lgslcblas -O3 -DHAVE_INLINE -lm
+$(POP): popmodel.c
+	clang popmodel.c -o $(POP) $(OPTS)
 
-niche: nichemodel.c
-	clang nichemodel.c -o niche -lgsl -lgslcblas -O3 -DHAVE_INLINE -lm
+$(NICHE): nichemodel.c
+	clang nichemodel.c -o $(NICHE) $(OPTS)
