@@ -1,5 +1,5 @@
 # Output folder, files prefix
-prefix = 'mig'
+prefix = 'assembly'
 of = '../output/'
 files = list.files(path=of, pattern=prefix)
 
@@ -7,7 +7,24 @@ files = list.files(path=of, pattern=prefix)
 library(rjson)
 library(ggplot2)
 
-# Function to analyze a SINGLE simulation
+timeSeries = function(rec)
+{
+   series = NULL
+   Times = as.numeric(names(rec$times))
+   tSeq = seq(from=min(Times), to=max(Times)+1, by=50)
+   for(i in c(2:length(tSeq)))
+   {
+      sTime = as.character(c(tSeq[i-1]:(tSeq[i]-1)))
+      subRec = rec$times[names(rec$times)%in%sTime]
+      subRec$times = subRec
+      mTime = mean(as.numeric(sTime))
+      cLine = c(time=mTime, unlist(singleOutput(subRec)))
+      series = rbind(series, cLine)
+   }
+   return(series)
+}
+
+# Function to analyze a timesteps pool
 singleOutput = function(rec)
 {
    # We get the list of all species
@@ -30,11 +47,11 @@ singleOutput = function(rec)
    ADJ[ADJ>0] = 1
    L = sum(ADJ)
    # Return some elements
-   return(list(S=averageRichness, L=L, Co=L/averageRichness^2, ml=mean(FW), vl=var(FW)))
+   return(list(S=averageRichness, L=L, Co=L/averageRichness^2))
 }
 
 # Read all the files
-migrate = NULL
+assembl = NULL
 for(f in files)
 {
    # Full file path
@@ -42,19 +59,23 @@ for(f in files)
    # Read the JSON object
    rec = fromJSON(file=f_path)
    # Analyse the simulation
-   metrics = singleOutput(rec)
+   metrics = timeSeries(rec)
    # Get simulation parameters
    f_split = unlist(strsplit(unlist(strsplit(f,'\\.'))[1],'-'))
    s_n = as.numeric(f_split[2]) # Neutral ?
    s_m = as.numeric(f_split[3]) # Mutants each time
+   s_a = as.numeric(f_split[5]) # Assembly ?
    s_r = f_split[4] # Replicate
    # Wrap up the output
-   line_output = c('neutral'=s_n, 'm'=s_m, unlist(metrics))
-   migrate = rbind(migrate, line_output)
+   metrics = data.frame(metrics)
+   metrics$neutral = rep(s_n, nrow(metrics))
+   metrics$m = rep(s_m, nrow(metrics))
+   metrics$assembly = rep(s_a, nrow(metrics))
+   assembl = rbind(assembl, metrics)
 }
 
-migrate = data.frame(migrate)
+assembl = data.frame(assembl)
 
 # Plot: connectance as a function of migrant density in neutral / non-neutral
-PL = ggplot(migrate) + theme_bw()
-print(PL + geom_point(aes(x=m,y=Co,colour=factor(neutral))))
+PL = ggplot(assembl) + theme_bw()
+print(PL + geom_point(aes(x=time,y=Co,colour=factor(neutral))) + facet_wrap(factor(m)))
