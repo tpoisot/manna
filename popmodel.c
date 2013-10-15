@@ -1,6 +1,3 @@
-// gcc popmodel.c -o pop -lgsl -lgslcblas -O3 -DHAVE_INLINE
-// clang popmodel.c -o pop -lgsl -lgslcblas -O3 -DHAVE_INLINE
-
 #define FNSIZE 128
 
 #include <stdio.h>
