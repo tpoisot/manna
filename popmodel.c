@@ -196,7 +196,6 @@ int main(int argc, char *argv[]) {
                if(Recorded > 0) fprintf(output, ",");
                fprintf(output,"{\"pred\": %d, \"prey\": %d}", SpPred, SpPrey);
                Recorded += 1;
-					//fprintf(output, "\"\":%s %d %d %d %d %d %d\n", argv[6], niche, step+1, SpPred+1, SpPrey+1, pop[SpPred], pop[SpPrey]);
 				}
 				--pop[SpPrey];
 			}
